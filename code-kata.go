@@ -5,6 +5,9 @@ import (
     "fmt"
     "log"
     "os"
+    "strings"
+    "strconv"
+    "regexp"
 )
 
 
@@ -18,18 +21,47 @@ func (w *weather) spread() int {
 }
 
 func main() {
+  weather := ReadWeather("weather.dat")
+  for _,element := range weather  {
+    fmt.Println(element.spread())
+  }
+
+}
+
+func ReadWeather(filename string) []weather {
+  var w []weather
   file, err := os.Open("weather.dat")
   if err != nil {
      log.Fatal(err)
- }
+  }
   scanner := bufio.NewScanner(file)
   for scanner.Scan() {
-      fmt.Println(scanner.Text())
+    var line = scanner.Text()
+    var validLine = regexp.MustCompile("^\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)")
+    var matched = validLine.FindAllString(line, -1)
+    if len(matched) > 0  {
+      w = append(w, CreateWeather(matched[0]))
+    }
   }
-
   if err := scanner.Err(); err != nil {
       log.Fatal(err)
   }
+  return w
 }
 
-func 
+func CreateWeather(line string) weather {
+  words := strings.Fields(line)
+  return weather{
+                  day : ParseInt(words[0]),
+                  maxTemperature : ParseInt(words[1]),
+                  minTemperature : ParseInt(words[2]),
+                 }
+}
+
+func ParseInt(value string) int {
+  strvalue, err := strconv.Atoi(value)
+  if  err != nil {
+    log.Println(err)
+  }
+  return strvalue
+}
