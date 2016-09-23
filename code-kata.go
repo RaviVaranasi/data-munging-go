@@ -7,6 +7,16 @@ import (
     "os"
 )
 
+
+type weather struct {
+  day int
+  maxTemperature, minTemperature   int
+}
+
+func (w *weather) spread() int {
+    return w.maxTemperature - w.minTemperature
+}
+
 func main() {
   file, err := os.Open("weather.dat")
   if err != nil {
@@ -21,3 +31,5 @@ func main() {
       log.Fatal(err)
   }
 }
+
+func 
