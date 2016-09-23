@@ -22,9 +22,13 @@ func (w *weather) spread() int {
 
 func main() {
   weather := ReadWeather("weather.dat")
+  var smallest = weather[0]
   for _,element := range weather  {
-    fmt.Println(element.spread())
+    if element.spread() < smallest.spread() {
+      smallest = element
+    }
   }
+  fmt.Printf("%+v\n", smallest)
 
 }
 
